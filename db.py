@@ -856,6 +856,11 @@ def get_recent_photos(limit=20):
     return items
 
 def record_visit(ip, user_agent=''):
+    if not ip or ip in ('127.0.0.1', '::1', 'localhost'):
+        return
+    ua_lower = (user_agent or '').lower()
+    if any(bot in ua_lower for bot in ('uptime', 'healthcheck', 'curl/', 'python-requests')):
+        return
     conn = get_conn()
     conn.execute("INSERT INTO page_views(ip, user_agent) VALUES (?, ?)", (ip, user_agent))
     conn.commit()
@@ -863,12 +868,12 @@ def record_visit(ip, user_agent=''):
 
 def get_visitor_stats():
     conn = get_conn()
-    total = conn.execute("SELECT COUNT(*) AS c FROM page_views").fetchone()['c']
-    unique_total = conn.execute("SELECT COUNT(DISTINCT ip) AS c FROM page_views").fetchone()['c']
-    today = conn.execute("SELECT COUNT(*) AS c FROM page_views WHERE date(visited_at) = date('now')").fetchone()['c']
-    online = conn.execute("SELECT COUNT(DISTINCT ip) AS c FROM page_views WHERE visited_at > datetime('now', '-5 minutes')").fetchone()['c']
+    total = conn.execute("SELECT COUNT(*) AS c FROM page_views WHERE ip NOT IN ('127.0.0.1', '::1')").fetchone()['c']
+    unique_total = conn.execute("SELECT COUNT(DISTINCT ip) AS c FROM page_views WHERE ip NOT IN ('127.0.0.1', '::1')").fetchone()['c']
+    today = conn.execute("SELECT COUNT(*) AS c FROM page_views WHERE ip NOT IN ('127.0.0.1', '::1') AND date(visited_at) = date('now')").fetchone()['c']
+    online = conn.execute("SELECT COUNT(DISTINCT ip) AS c FROM page_views WHERE ip NOT IN ('127.0.0.1', '::1') AND visited_at > datetime('now', '-5 minutes')").fetchone()['c']
     conn.close()
-    return {'total_views': total, 'unique_visitors': unique_total, 'today_views': today, 'online_now': online}
+    return {'total_views': total, 'unique_visitors': unique_total, 'today_views': today, 'online_now': max(online, 1)}
 
 def add_feedback(message, feedback_type='other', station_id=None, user_tg_id=None, username='', contact=''):
     conn = get_conn()
