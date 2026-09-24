@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
+  <title>Пульт диспетчера — Топливо Якутия</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: #090d16;
+      color: #f8fafc;
+      min-height: 100vh;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      background: #131b2e;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 16px 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #38bdf8;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.3px;
+    }
+
+    .live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #10b981;
+      font-weight: 600;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-top: 4px;
+    }
+
+    .header-subtitle {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    /* Station Selector Card */
+    .station-select-card {
+      background: #131b2e;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 16px 18px;
+      margin-bottom: 16px;
+    }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #94a3b8;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .station-select {
+      width: 100%;
+      background: #0b1120;
+      border: 1px solid #334155;
+      color: #f8fafc;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 12px 14px;
+      border-radius: 12px;
+      outline: none;
+      cursor: pointer;
+      appearance: auto;
+    }
+
+    .station-select:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+    }
+
+    .active-station-box {
+      background: #0b1120;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .active-station-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .active-station-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #f8fafc;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .active-station-address {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .change-station-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: #38bdf8;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-left: 10px;
+    }
+
+    .change-station-btn:active {
+      background: rgba(56, 189, 248, 0.2);
+    }
+
+    /* Global Limit Card */
+    .limit-card {
+      background: #131b2e;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 14px 18px;
+      margin-bottom: 16px;
+    }
+
+    .limit-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .limit-btn {
+      background: #0b1120;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 4px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all .15s ease;
+      text-align: center;
+    }
+
+    .limit-btn.active {
+      background: #d97706;
+      border-color: #f59e0b;
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+    }
+
+    .limit-hint {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 8px;
+    }
+
+    /* Fuel Cards */
+    .fuel-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .fuel-card {
+      background: #131b2e;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 16px 18px;
+      transition: border-color .2s;
+    }
+
+    .fuel-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .fuel-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .fuel-name {
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .fuel-current-status {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .status-badge-yes {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status-badge-no {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .status-badge-queue {
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .status-badge-limit {
+      background: rgba(217, 119, 6, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(217, 119, 6, 0.3);
+    }
+
+    .status-badge-none {
+      background: rgba(148, 163, 184, 0.1);
+      color: #94a3b8;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    /* Action Buttons Grid */
+    .status-actions-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .action-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 8px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all .15s ease;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.25;
+      text-align: center;
+    }
+
+    .action-btn .btn-icon {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+
+    .action-btn.btn-yes {
+      background: #064e3b;
+      border-color: #059669;
+      color: #6ee7b7;
+    }
+    .action-btn.btn-yes:active {
+      background: #059669;
+      color: #ffffff;
+      transform: scale(0.97);
+    }
+
+    .action-btn.btn-limit {
+      background: #78350f;
+      border-color: #d97706;
+      color: #fde68a;
+    }
+    .action-btn.btn-limit:active {
+      background: #d97706;
+      color: #ffffff;
+      transform: scale(0.97);
+    }
+
+    .action-btn.btn-queue {
+      background: #451a03;
+      border-color: #b45309;
+      color: #fdba74;
+    }
+    .action-btn.btn-queue:active {
+      background: #b45309;
+      color: #ffffff;
+      transform: scale(0.97);
+    }
+
+    .action-btn.btn-no {
+      background: #450a0a;
+      border-color: #dc2626;
+      color: #fca5a5;
+    }
+    .action-btn.btn-no:active {
+      background: #dc2626;
+      color: #ffffff;
+      transform: scale(0.97);
+    }
+
+    /* Toast Notification */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #10b981;
+      color: #ffffff;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      opacity: 0;
+      transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* Error / Unauthorized State */
+    .error-card {
+      background: #1f1315;
+      border: 1px solid #7f1d1d;
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .error-card h2 {
+      color: #ef4444;
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .error-card p {
+      color: #fca5a5;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #64748b;
+      margin-top: auto;
+      padding: 20px 0;
+    }
+
+    .footer a {
+      color: #38bdf8;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Loading State -->
+  <div id="loadingView" style="text-align: center; padding: 60px 0;">
+    <div style="font-size: 32px; margin-bottom: 12px;">⏳</div>
+    <div style="font-size: 16px; color: #94a3b8; font-weight: 600;">Подключение к пульту сети...</div>
+  </div>
+
+  <!-- Error View -->
+  <div id="errorView" class="error-card" style="display: none;">
+    <h2>Ошибка доступа</h2>
+    <p id="errorMessage">Недействительная ссылка или токен оператора. Пожалуйста, обратитесь к координатору сервиса.</p>
+  </div>
+
+  <!-- Main Content -->
+  <div id="mainView" style="display: none;">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-top">
+        <span class="brand-badge" id="brandBadge">Сеть АЗС</span>
+        <div class="live-indicator">
+          <span class="live-dot"></span>
+          <span>В эфире</span>
+        </div>
+      </div>
+      <div class="header-title">Пульт управления колонками</div>
+      <div class="header-subtitle">Изменения мгновенно видны всем водителям на карте</div>
+    </div>
+
+    <!-- Station Selection -->
+    <div class="station-select-card">
+      <div class="section-label">
+        <span>АЗС / АГЗС</span>
+        <span style="font-size: 10px; color: #64748b;">выбор сохраняется</span>
+      </div>
+
+      <!-- Selector mode -->
+      <div id="stationSelectMode" style="display: none;">
+        <select id="stationDropdown" class="station-select">
+          <option value="">-- Выберите вашу АЗС / АГЗС --</option>
+        </select>
+      </div>
+
+      <!-- Active Station display -->
+      <div id="stationActiveMode" class="active-station-box" style="display: none;">
+        <div class="active-station-info">
+          <div class="active-station-name" id="activeStationName">АГЗС Можайского, 31</div>
+          <div class="active-station-address" id="activeStationAddress">ул. Можайского, 31</div>
+        </div>
+        <button class="change-station-btn" id="changeStationBtn">Сменить</button>
+      </div>
+    </div>
+
+    <!-- Global Limit Settings -->
+    <div class="limit-card">
+      <div class="section-label">
+        <span>Лимит отпуска (по умолчанию)</span>
+      </div>
+      <div class="limit-buttons">
+        <button class="limit-btn" data-limit="0">Без лимита</button>
+        <button class="limit-btn" data-limit="20">20 литров</button>
+        <button class="limit-btn" data-limit="30">30 литров</button>
+        <button class="limit-btn" data-limit="50">50 литров</button>
+      </div>
+      <div class="limit-hint">💡 Сохраняется на этом телефоне/ПК для всех быстрых отметок лимита</div>
+    </div>
+
+    <!-- Fuels List -->
+    <div class="section-label" style="padding: 0 4px;">
+      <span>Колонки и виды топлива</span>
+    </div>
+    <div class="fuel-list" id="fuelsContainer">
+      <!-- Dynamic fuel cards -->
+    </div>
+
+    <div class="footer">
+      Сервис мониторинга топлива «Топливо Якутия»<br>
+      <a href="/fuel-map/" target="_blank">Открыть общую карту города ↗</a>
+    </div>
+  </div>
+</div>
+
+<div id="toast">✓ Статус обновлён на карте</div>
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = (urlParams.get('token') || localStorage.getItem('partner_token') || '').trim();
+
+  let partnerData = null;
+  let currentStation = null;
+  let activeLimit = parseInt(localStorage.getItem('partner_limit') || '0', 10);
+
+  // Status visual maps
+  const STATUS_CLASSES = {
+    'yes': 'status-badge-yes',
+    'no': 'status-badge-no',
+    'queue': 'status-badge-queue',
+    'limit': 'status-badge-limit',
+    'none': 'status-badge-none'
+  };
+
+  const STATUS_LABELS = {
+    'yes': '🟢 В наличии',
+    'no': '🔴 Нет топлива',
+    'queue': '🟡 Давление / Перерыв',
+    'limit': '🟠 Лимит',
+    'none': '⚪ Нет данных'
+  };
+
+  function showToast(text) {
+    const t = document.getElementById('toast');
+    t.textContent = text || '✓ Статус обновлён на карте';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2400);
+  }
+
+  // Limit buttons initialization
+  function updateLimitButtonsUi() {
+    document.querySelectorAll('.limit-btn').forEach(btn => {
+      const val = parseInt(btn.getAttribute('data-limit'), 10);
+      if (val === activeLimit) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+  }
+
+  document.querySelectorAll('.limit-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeLimit = parseInt(btn.getAttribute('data-limit'), 10);
+      localStorage.setItem('partner_limit', activeLimit);
+      updateLimitButtonsUi();
+      showToast(activeLimit > 0 ? `✓ Лимит сохранён: ${activeLimit} л` : '✓ Режим: без лимита');
+    });
+  });
+
+  // Switch to station select dropdown
+  function showSelectStationMode() {
+    document.getElementById('stationSelectMode').style.display = 'block';
+    document.getElementById('stationActiveMode').style.display = 'none';
+    document.getElementById('fuelsContainer').innerHTML = '<div style="text-align:center;color:#64748b;padding:30px 0;">Выберите вашу АЗС в списке выше</div>';
+  }
+
+  // Select station and persist to localStorage
+  function selectStation(stationId) {
+    if (!partnerData || !partnerData.stations) return;
+    const found = partnerData.stations.find(s => s.id == stationId);
+    if (!found) return;
+
+    currentStation = found;
+    localStorage.setItem('partner_station_id', stationId);
+
+    document.getElementById('stationSelectMode').style.display = 'none';
+    document.getElementById('stationActiveMode').style.display = 'flex';
+    document.getElementById('activeStationName').textContent = found.name;
+    document.getElementById('activeStationAddress').textContent = found.address || found.city || '';
+
+    renderFuels(found);
+  }
+
+  document.getElementById('changeStationBtn').addEventListener('click', () => {
+    showSelectStationMode();
+  });
+
+  document.getElementById('stationDropdown').addEventListener('change', (e) => {
+    if (e.target.value) {
+      selectStation(e.target.value);
+    }
+  });
+
+  // Render Fuels for active station
+  function renderFuels(station) {
+    const container = document.getElementById('fuelsContainer');
+    container.innerHTML = '';
+
+    const fuels = station.fuels || [];
+    if (fuels.length === 0) {
+      container.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:24px;">Для данной станции не настроены виды топлива</div>';
+      return;
+    }
+
+    fuels.forEach(f => {
+      const card = document.createElement('div');
+      card.className = 'fuel-card';
+      card.id = `fuelCard_${f.code}`;
+
+      const stClass = STATUS_CLASSES[f.status] || 'status-badge-none';
+      let stLabel = STATUS_LABELS[f.status] || '⚪ Нет данных';
+      if (f.status === 'limit' && f.limit_liters) {
+        stLabel += ` (${f.limit_liters} л)`;
+      }
+
+      card.innerHTML = `
+        <div class="fuel-card-header">
+          <div class="fuel-title-wrap">
+            <span class="fuel-name">${f.label}</span>
+          </div>
+          <span class="fuel-current-status ${stClass}" id="statusBadge_${f.code}">
+            ${stLabel}
+          </span>
+        </div>
+        <div class="status-actions-grid">
+          <button class="action-btn btn-yes" data-code="${f.code}" data-status="yes">
+            <span class="btn-icon">🟢</span>
+            <span>Есть в наличии</span>
+          </button>
+          <button class="action-btn btn-limit" data-code="${f.code}" data-status="limit">
+            <span class="btn-icon">🟠</span>
+            <span>Лимит</span>
+          </button>
+          <button class="action-btn btn-queue" data-code="${f.code}" data-status="queue">
+            <span class="btn-icon">🟡</span>
+            <span>Давление / Слив</span>
+          </button>
+          <button class="action-btn btn-no" data-code="${f.code}" data-status="no">
+            <span class="btn-icon">🔴</span>
+            <span>Нет в наличии</span>
+          </button>
+        </div>
+      `;
+
+      // Attach clicks
+      card.querySelectorAll('.action-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const status = btn.getAttribute('data-status');
+          const code = btn.getAttribute('data-code');
+          sendUpdate(station.id, code, status);
+        });
+      });
+
+      container.appendChild(card);
+    });
+  }
+
+  // Send update to server
+  async function sendUpdate(stationId, fuelCode, status) {
+    const limitToSend = (status === 'limit') ? (activeLimit || 30) : null;
+
+    // Optimistic UI update
+    const badge = document.getElementById(`statusBadge_${fuelCode}`);
+    if (badge) {
+      badge.className = `fuel-current-status ${STATUS_CLASSES[status] || 'status-badge-none'}`;
+      let text = STATUS_LABELS[status] || status;
+      if (status === 'limit' && limitToSend) text += ` (${limitToSend} л)`;
+      badge.textContent = text;
+    }
+
+    try {
+      const res = await fetch('/fuel-map/api/partner/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: token,
+          station_id: stationId,
+          fuel_code: fuelCode,
+          status: status,
+          limit_liters: limitToSend
+        })
+      });
+
+      const json = await res.json();
+      if (json.ok) {
+        showToast('✓ Обновлено на карте города!');
+      } else {
+        alert('Ошибка: ' + (json.error || 'Не удалось обновить статус'));
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Ошибка связи с сервером');
+    }
+  }
+
+  // Main init
+  async function init() {
+    if (!token) {
+      document.getElementById('loadingView').style.display = 'none';
+      document.getElementById('errorView').style.display = 'block';
+      document.getElementById('errorMessage').textContent = 'В адресе ссылки отсутствует ключ доступа (?token=...). Откройте персональную ссылку из письма.';
+      return;
+    }
+
+    // Persist token in storage
+    localStorage.setItem('partner_token', token);
+
+    try {
+      const res = await fetch(`/fuel-map/api/partner/stations?token=${encodeURIComponent(token)}`);
+      if (!res.ok) {
+        throw new Error('Ключ доступа недействителен или отозван');
+      }
+
+      partnerData = await res.json();
+      document.getElementById('brandBadge').textContent = partnerData.brand_name || 'Сеть АЗС';
+
+      // Populate dropdown
+      const dropdown = document.getElementById('stationDropdown');
+      dropdown.innerHTML = '<option value="">-- Выберите вашу АЗС / АГЗС --</option>';
+      partnerData.stations.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = `${s.name} (${s.address || s.city})`;
+        dropdown.appendChild(opt);
+      });
+
+      updateLimitButtonsUi();
+
+      document.getElementById('loadingView').style.display = 'none';
+      document.getElementById('mainView').style.display = 'block';
+
+      // Check saved station
+      const savedStationId = localStorage.getItem('partner_station_id');
+      if (savedStationId && partnerData.stations.some(s => s.id == savedStationId)) {
+        dropdown.value = savedStationId;
+        selectStation(savedStationId);
+      } else {
+        showSelectStationMode();
+      }
+
+    } catch (err) {
+      document.getElementById('loadingView').style.display = 'none';
+      document.getElementById('errorView').style.display = 'block';
+      document.getElementById('errorMessage').textContent = err.message;
+    }
+  }
+
+  init();
+</script>
+
+</body>
+</html>

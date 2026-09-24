@@ -1,0 +1,14 @@
+[Unit]
+Description=Toplivo Yakutsk Telegram Bot
+After=network.target
+
+[Service]
+Type=simple
+User=alvik
+WorkingDirectory=/home/alvik/toplivo-yakutsk
+ExecStart=/home/alvik/toplivo-yakutsk/venv/bin/python /home/alvik/toplivo-yakutsk/bot.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

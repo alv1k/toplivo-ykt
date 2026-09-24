@@ -1,0 +1,7 @@
+python-telegram-bot==20.7
+python-dotenv==1.2.1
+requests==2.32.5
+beautifulsoup4==4.12.3
+lxml==5.1.0
+apscheduler==3.11.2
+pytz==2026.1.post1

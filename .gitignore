@@ -1,0 +1,54 @@
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+
+# Node.js
+whatsapp/node_modules/
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Databases & Backups
+*.db
+*.db.*
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
+
+# Caches & Raw dumps
+data/sberazs_raw_latest.json
+data/*audit*
+data/*dump*
+
+# Sessions & Auth credentials (Sensitive!)
+whatsapp/auth_info/
+data/*.session
+data/*.session-journal
+*.session
+*.session-journal
+
+# Media & downloaded files
+media/
+*.jpg
+*.jpeg
+*.png
+
+# Temporary / Scratch files
+*.bak*
+*.tmp
+.DS_Store
+**/__pycache__/
+

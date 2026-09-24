@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
+  <title>Админ-панель — Топливо Якутия</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background: #090d16;
+      color: #f8fafc;
+      min-height: 100vh;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Top Bar */
+    .header {
+      background: #131b2e;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #38bdf8;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 20px;
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #0369a1; }
+
+    .btn-success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #fff;
+    }
+    .btn-success:hover { background: #059669; }
+
+    .btn-warning {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: rgba(245, 158, 11, 0.3);
+      color: #f59e0b;
+    }
+    .btn-warning:hover { background: rgba(245, 158, 11, 0.25); }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #ef4444;
+    }
+    .btn-danger:hover { background: rgba(239, 68, 68, 0.25); }
+
+    .btn-secondary {
+      background: #1e293b;
+      border-color: #334155;
+      color: #cbd5e1;
+    }
+    .btn-secondary:hover { background: #334155; }
+
+    .btn-sm {
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: 6px;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 8px;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      background: #131b2e;
+      border: 1px solid #1e293b;
+      color: #94a3b8;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: #0284c7;
+      border-color: #38bdf8;
+      color: #ffffff;
+    }
+
+    /* Filters Bar */
+    .filters-card {
+      background: #131b2e;
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .form-control {
+      background: #090d16;
+      border: 1px solid #334155;
+      color: #f8fafc;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-control:focus {
+      border-color: #38bdf8;
+    }
+
+    .search-input {
+      flex: 1 1 200px;
+      min-width: 180px;
+    }
+
+    /* Data Table Card */
+    .table-card {
+      background: #131b2e;
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    th {
+      background: #0d1322;
+      color: #94a3b8;
+      font-weight: 600;
+      padding: 12px 14px;
+      border-bottom: 1px solid #1e293b;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #1e293b;
+      color: #e2e8f0;
+      vertical-align: middle;
+    }
+
+    tr:hover td {
+      background: rgba(56, 189, 248, 0.03);
+    }
+
+    /* Status Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .badge-yes { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); color: #34d399; }
+    .badge-no { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; }
+    .badge-limit { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24; }
+    .badge-queue { background: rgba(234, 88, 12, 0.15); border: 1px solid rgba(234, 88, 12, 0.4); color: #fb923c; }
+
+    .badge-fuel {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #38bdf8;
+      font-weight: 800;
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .source-tag {
+      display: inline-block;
+      font-size: 11px;
+      color: #94a3b8;
+      background: #090d16;
+      border: 1px solid #1e293b;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .batch-group-start td {
+      border-top: 1px solid #0369a1 !important;
+    }
+    .batch-group-item {
+      background: rgba(2, 132, 199, 0.02);
+    }
+    .batch-group-item td:first-child {
+      border-left: 3px solid #0284c7;
+    }
+    .batch-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10.5px;
+      background: rgba(2, 132, 199, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #38bdf8;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .batch-sub-comment {
+      font-size: 11.5px;
+      color: #64748b;
+      font-style: italic;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: #0d1322;
+      border-top: 1px solid #1e293b;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+
+    .page-buttons {
+      display: flex;
+      gap: 6px;
+    }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: #131b2e;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 520px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      transform: translateY(10px);
+      transition: transform 0.2s;
+    }
+
+    .modal-overlay.active .modal-card {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #94a3b8;
+      margin-bottom: 6px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    #toast.success { border-color: #10b981; }
+    #toast.error { border-color: #ef4444; }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Analytics Section Styles */
+    .stat-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .stat-card {
+      background: #131b2e;
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+      padding: 16px 18px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+    }
+    .stat-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .stat-value {
+      font-size: 26px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 8px 0 4px;
+    }
+    .stat-desc {
+      font-size: 12px;
+      color: #64748b;
+    }
+    .analytics-cols {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .analytics-panel {
+      background: #131b2e;
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+    .panel-heading {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .rank-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .rank-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 10px 14px;
+    }
+    .rank-bar-bg {
+      background: #1e293b;
+      border-radius: 4px;
+      height: 6px;
+      width: 100%;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+    .rank-bar-fill {
+      height: 100%;
+      background: #38bdf8;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="brand-badge">🛡️ Диспетчерская</div>
+      <div>
+        <div class="header-title">Топливо Якутия — Админ-панель</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="btn btn-primary" onclick="openNewMarkModal()">+ Новая отметка</button>
+      <button class="btn btn-warning btn-sm" onclick="clearMapCache()" title="Принудительно сбросить кэш карты и обновить клиентов">⚡ Сброс кэша карты</button>
+      <a href="./" target="_blank" class="btn btn-secondary btn-sm">🗺️ Открыть карту</a>
+      <button class="btn btn-secondary btn-sm" onclick="logout()">Выход</button>
+    </div>
+  </div>
+
+  <!-- Tabs Navigation -->
+  <div class="tabs">
+    <button class="tab-btn active" id="tabMarksBtn" onclick="switchTab('marks')">⛽ Отметки топлива (<span id="marksCountBadge">0</span>)</button>
+    <button class="tab-btn" id="tabCommentsBtn" onclick="switchTab('comments')">💬 Отзывы и чат (<span id="commentsCountBadge">0</span>)</button>
+    <button class="tab-btn" id="tabStationsBtn" onclick="switchTab('stations')">🚛 Слив и закрытия АЗС</button>
+    <button class="tab-btn" id="tabAnalyticsBtn" onclick="switchTab('analytics')">📊 Аналитика посетителей</button>
+  </div>
+
+  <!-- TAB 1: MARKS CRUD -->
+  <div id="tabMarksSection">
+    <div class="filters-card">
+      <input type="text" id="marksSearchInput" class="form-control search-input" placeholder="🔍 Поиск по АЗС, адресу или автору..." onkeyup="debounceLoadMarks()">
+      
+      <select id="marksFuelFilter" class="form-control" onchange="loadMarks(0)">
+        <option value="">Все виды топлива</option>
+        <option value="92">АИ-92</option>
+        <option value="95">АИ-95</option>
+        <option value="98">АИ-98</option>
+        <option value="100">АИ-100</option>
+        <option value="dt">ДТ</option>
+        <option value="gas">Газ</option>
+      </select>
+
+      <select id="marksStatusFilter" class="form-control" onchange="loadMarks(0)">
+        <option value="">Все статусы</option>
+        <option value="yes">🟢 Есть</option>
+        <option value="limit">🟠 Лимит / Талоны</option>
+        <option value="no">🔴 Нет</option>
+        <option value="queue">🟡 Очередь</option>
+      </select>
+
+      <select id="marksSourceFilter" class="form-control" onchange="loadMarks(0)">
+        <option value="">Все источники</option>
+        <option value="whatsapp">WhatsApp группы</option>
+        <option value="telegram">Telegram чаты</option>
+        <option value="bot">Telegram бот</option>
+        <option value="guest">Веб-карта (гость)</option>
+        <option value="sberazs">СберАЗС / Парсер</option>
+        <option value="admin">Администратор</option>
+      </select>
+
+      <button class="btn btn-secondary btn-sm" onclick="loadMarks(0)">🔄 Обновить</button>
+    </div>
+
+    <div class="table-card">
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>ID / Время</th>
+              <th>АЗС и Адрес</th>
+              <th>💬 Сообщение / Комментарий</th>
+              <th>Топливо</th>
+              <th>Статус</th>
+              <th>Лимит</th>
+              <th>Очередь</th>
+              <th>Источник / Автор</th>
+              <th style="text-align:right;">Действия</th>
+            </tr>
+          </thead>
+          <tbody id="marksTableBody">
+            <tr><td colspan="9" style="text-align:center;padding:30px;"><div class="loading-spinner"></div> Загрузка меток...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <div>Показано: <span id="paginationInfo">0 - 0 из 0</span></div>
+        <div class="page-buttons">
+          <button class="btn btn-secondary btn-sm" id="prevPageBtn" onclick="changePage(-1)" disabled>← Назад</button>
+          <button class="btn btn-secondary btn-sm" id="nextPageBtn" onclick="changePage(1)" disabled>Вперед →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: COMMENTS MODERATION -->
+  <div id="tabCommentsSection" style="display:none;">
+    <div class="filters-card">
+      <input type="text" id="commentsSearchInput" class="form-control search-input" placeholder="🔍 Поиск по тексту комментария, АЗС, автору..." onkeyup="debounceLoadComments()">
+      <button class="btn btn-secondary btn-sm" onclick="loadComments(0)">🔄 Обновить</button>
+    </div>
+
+    <div class="table-card">
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>ID / Время</th>
+              <th>АЗС</th>
+              <th>Комментарий</th>
+              <th>Фото</th>
+              <th>Автор</th>
+              <th style="text-align:right;">Действия</th>
+            </tr>
+          </thead>
+          <tbody id="commentsTableBody">
+            <tr><td colspan="6" style="text-align:center;padding:30px;"><div class="loading-spinner"></div> Загрузка отзывов...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: STATIONS STATUS & UNLOADING -->
+  <div id="tabStationsSection" style="display:none;">
+    <div class="filters-card">
+      <input type="text" id="stationsSearchInput" class="form-control search-input" placeholder="🔍 Поиск станции для управления сливом/закрытием..." onkeyup="filterStationsTable()">
+    </div>
+
+    <div class="table-card">
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>АЗС и Бренд</th>
+              <th>Адрес / Город</th>
+              <th>Текущий статус</th>
+              <th>Слив бензовоза</th>
+              <th style="text-align:right;">Быстрое управление</th>
+            </tr>
+          </thead>
+          <tbody id="stationsTableBody">
+            <tr><td colspan="6" style="text-align:center;padding:30px;"><div class="loading-spinner"></div> Загрузка станций...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: VISITOR ANALYTICS -->
+  <div id="tabAnalyticsSection" style="display:none;">
+    <div class="filters-card" style="justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <span style="font-size:13px;font-weight:700;color:#94a3b8;">📅 Период:</span>
+        <select id="analyticsPeriodSelect" class="form-control" onchange="loadAnalytics()">
+          <option value="12">За последние 12 часов</option>
+          <option value="24" selected>За последние 24 часа</option>
+          <option value="48">За последние 48 часов</option>
+          <option value="168">За последние 7 дней (неделя)</option>
+        </select>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="loadAnalytics()">🔄 Обновить аналитику</button>
+    </div>
+
+    <!-- Stat Cards Grid -->
+    <div class="stat-cards-grid">
+      <div class="stat-card">
+        <div class="stat-title">👥 Уникальные посетители (DAU)</div>
+        <div class="stat-value" id="statUniqueGuests">0</div>
+        <div class="stat-desc" id="statUniqueDesc">0 в Telegram WebApp</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">📱 Сессий на карте</div>
+        <div class="stat-value" id="statUniqueSessions">0</div>
+        <div class="stat-desc">активных заходов</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">🧭 Построено маршрутов</div>
+        <div class="stat-value" id="statTotalRoutes" style="color:#34d399;">0</div>
+        <div class="stat-desc">кликов в 2ГИС / Навигатор</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">⚡ Всего действий</div>
+        <div class="stat-value" id="statTotalEvents" style="color:#38bdf8;">0</div>
+        <div class="stat-desc">кликов, фильтров и открытий</div>
+      </div>
+    </div>
+
+    <!-- Analytics 2-Columns -->
+    <div class="analytics-cols">
+      <!-- Col 1: Top Stations Clicked -->
+      <div class="analytics-panel">
+        <div class="panel-heading">
+          <span>🔥 Топ-10 АЗС по интересу водителей</span>
+          <span style="font-size:12px;color:#94a3b8;font-weight:normal;">клики и открытия карточек</span>
+        </div>
+        <div id="analyticsTopStations" class="rank-list">
+          <div style="text-align:center;color:#64748b;padding:20px;">Загрузка данных...</div>
+        </div>
+      </div>
+
+      <!-- Col 2: Top Routes Built -->
+      <div class="analytics-panel">
+        <div class="panel-heading">
+          <span>🚗 Топ-10 АЗС по поездкам (Маршруты в 2ГИС)</span>
+          <span style="font-size:12px;color:#94a3b8;font-weight:normal;">целевые конверсии</span>
+        </div>
+        <div id="analyticsTopRoutes" class="rank-list">
+          <div style="text-align:center;color:#64748b;padding:20px;">Загрузка данных...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analytics 2-Columns Lower -->
+    <div class="analytics-cols">
+      <!-- Fuel Search Popularity -->
+      <div class="analytics-panel">
+        <div class="panel-heading">
+          <span>⛽ Спрос по маркам топлива</span>
+          <span style="font-size:12px;color:#94a3b8;font-weight:normal;">выбор в фильтрах</span>
+        </div>
+        <div id="analyticsFuelFilters" class="rank-list">
+          <div style="text-align:center;color:#64748b;padding:20px;">Загрузка данных...</div>
+        </div>
+      </div>
+
+      <!-- Events Breakdown & Urgent search -->
+      <div class="analytics-panel">
+        <div class="panel-heading">
+          <span>📋 Воронка взаимодействия</span>
+          <span style="font-size:12px;color:#94a3b8;font-weight:normal;">типы событий</span>
+        </div>
+        <div id="analyticsEventsBreakdown" class="rank-list">
+          <div style="text-align:center;color:#64748b;padding:20px;">Загрузка данных...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analytics Row 3: Promo and Ads -->
+    <div class="analytics-cols" style="margin-top:16px;">
+      <div class="analytics-panel" style="grid-column: 1 / -1;">
+        <div class="panel-heading">
+          <span>🎯 Переходы по рекламным и промо-плашкам</span>
+          <span style="font-size:12px;color:#94a3b8;font-weight:normal;">клики по баннерам экосистемы tiin и B2B</span>
+        </div>
+        <div id="analyticsPromoClicks" class="rank-list">
+          <div style="text-align:center;color:#64748b;padding:20px;">Загрузка данных...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL: EDIT / CREATE MARK -->
+<div class="modal-overlay" id="markModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="modal-title" id="markModalTitle">Редактирование отметки</div>
+      <button class="modal-close" onclick="closeMarkModal()">&times;</button>
+    </div>
+    <form id="markForm" onsubmit="saveMark(event)">
+      <input type="hidden" id="editMarkId">
+
+      <!-- Context Box for original driver comment & photo -->
+      <div id="modalCommentBox" style="display:none;background:#090d16;border:1px solid #1e293b;border-left:3px solid #38bdf8;border-radius:8px;padding:10px 12px;margin-bottom:14px;">
+        <div style="font-size:11px;font-weight:700;color:#38bdf8;margin-bottom:4px;display:flex;align-items:center;justify-content:space-between;">
+          <span>💬 Исходное сообщение из чата:</span>
+          <span id="modalCommentAuthor" style="color:#94a3b8;font-weight:normal;"></span>
+        </div>
+        <div id="modalCommentText" style="font-size:12.5px;color:#e2e8f0;white-space:pre-wrap;word-break:break-word;"></div>
+        <div id="modalCommentPhoto" style="margin-top:8px;display:none;"></div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">АЗС (станция) *</label>
+        <select id="modalStationSelect" class="form-control" style="width:100%;" required>
+          <option value="">Выберите станцию...</option>
+        </select>
+        <div style="font-size:11px;color:#94a3b8;margin-top:4px;">💡 Если NLP парсер ошибся с ориентиром, выберите правильную станцию здесь.</div>
+      </div>
+
+      <div style="display:flex;gap:10px;">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Топливо *</label>
+          <select id="modalFuelSelect" class="form-control" style="width:100%;" required>
+            <option value="92">АИ-92</option>
+            <option value="95">АИ-95</option>
+            <option value="98">АИ-98</option>
+            <option value="100">АИ-100</option>
+            <option value="dt">ДТ</option>
+            <option value="gas">Газ</option>
+            <option value="ts1">ТС-1</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Статус *</label>
+          <select id="modalStatusSelect" class="form-control" style="width:100%;" required>
+            <option value="yes">🟢 Есть</option>
+            <option value="limit">🟠 Лимит / Талоны</option>
+            <option value="no">🔴 Нет</option>
+            <option value="queue">🟡 Очередь</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Лимит (в литрах)</label>
+          <input type="number" id="modalLimitInput" class="form-control" placeholder="например, 20 или 30" min="1" max="500">
+        </div>
+
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Очередь (машин)</label>
+          <input type="number" id="modalQueueInput" class="form-control" placeholder="например, 10" min="0" max="100">
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" onclick="closeMarkModal()">Отмена</button>
+        <button type="submit" class="btn btn-primary" id="saveMarkBtn">Сохранить</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL: LOGIN / AUTH -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal-card" style="max-width:380px;">
+    <div class="modal-header">
+      <div class="modal-title">Вход в Админ-панель</div>
+    </div>
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label class="form-label">Секретный токен администратора</label>
+        <input type="password" id="adminTokenInput" class="form-control" style="width:100%;" placeholder="Введите токен..." required autofocus>
+      </div>
+      <div class="modal-actions">
+        <button type="submit" class="btn btn-primary" style="width:100%;">Войти</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  let adminToken = localStorage.getItem('toplivo_admin_token') || '';
+  let allStations = [];
+  let currentMarksItems = [];
+  let currentMarksOffset = 0;
+  const PAGE_SIZE = 50;
+  let debounceTimer = null;
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  const FUEL_NAMES = {
+    '92': 'АИ-92',
+    '95': 'АИ-95',
+    '98': 'АИ-98',
+    '100': 'АИ-100',
+    'dt': 'ДТ',
+    'gas': 'Газ',
+    'ts1': 'ТС-1'
+  };
+
+  const STATUS_LABELS = {
+    'yes': '<span class="badge badge-yes">🟢 Есть</span>',
+    'no': '<span class="badge badge-no">🔴 Нет</span>',
+    'limit': '<span class="badge badge-limit">🟠 Лимит</span>',
+    'queue': '<span class="badge badge-queue">🟡 Очередь</span>'
+  };
+
+  function parseUtcDate(str) {
+    if (!str) return null;
+    let s = String(str).trim();
+    if (s.includes('T')) return new Date(s);
+    const parts = s.split(' ');
+    if (parts.length === 2) {
+      const [y, m, d] = parts[0].split('-').map(Number);
+      const [hh, mm, ss] = parts[1].split(':').map(Number);
+      return new Date(Date.UTC(y, m - 1, d, hh, mm, ss || 0));
+    }
+    return new Date(s);
+  }
+
+  function fmtYktDateTime(utcStr) {
+    const dt = parseUtcDate(utcStr);
+    if (!dt || isNaN(dt.getTime())) return '—';
+    const parts = new Intl.DateTimeFormat('ru-RU', {
+      timeZone: 'Asia/Yakutsk',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    }).formatToParts(dt);
+    const map = {};
+    parts.forEach(p => map[p.type] = p.value);
+    return `${map.month}-${map.day} ${map.hour}:${map.minute}`;
+  }
+
+  function fmtYktTimeOnly(utcStr) {
+    const dt = parseUtcDate(utcStr);
+    if (!dt || isNaN(dt.getTime())) return '—';
+    return dt.toLocaleTimeString('ru-RU', { timeZone: 'Asia/Yakutsk', hour: '2-digit', minute: '2-digit', hour12: false });
+  }
+
+  // Toast
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `show ${type}`;
+    setTimeout(() => { t.className = ''; }, 3000);
+  }
+
+  // Auth Header
+  function getHeaders() {
+    const h = { 'Content-Type': 'application/json' };
+    if (adminToken) {
+      h['X-Admin-Token'] = adminToken;
+    }
+    return h;
+  }
+
+  async function checkAuth() {
+    // Check url params for ?token=
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('token')) {
+      adminToken = params.get('token');
+      localStorage.setItem('toplivo_admin_token', adminToken);
+    }
+
+    try {
+      const res = await fetch('/api/admin/auth-check', { headers: getHeaders() });
+      const data = await res.json();
+      if (data.authenticated) {
+        document.getElementById('authModal').classList.remove('active');
+        initAdmin();
+      } else {
+        document.getElementById('authModal').classList.add('active');
+      }
+    } catch (e) {
+      document.getElementById('authModal').classList.add('active');
+    }
+  }
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    adminToken = document.getElementById('adminTokenInput').value.trim();
+    localStorage.setItem('toplivo_admin_token', adminToken);
+    const res = await fetch('/api/admin/auth-check', { headers: getHeaders() });
+    const data = await res.json();
+    if (data.authenticated) {
+      document.getElementById('authModal').classList.remove('active');
+      showToast('Авторизация успешна');
+      initAdmin();
+    } else {
+      showToast('Неверный токен администратора', 'error');
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem('toplivo_admin_token');
+    adminToken = '';
+    window.location.reload();
+  }
+
+  // Init
+  async function initAdmin() {
+    await loadStations();
+    loadMarks(0);
+  }
+
+  async function loadStations() {
+    try {
+      const res = await fetch('/api/admin/stations', { headers: getHeaders() });
+      allStations = await res.json();
+      allStations.sort((a, b) => a.name.localeCompare(b.name));
+      
+      const sel = document.getElementById('modalStationSelect');
+      sel.innerHTML = '<option value="">Выберите станцию...</option>';
+      allStations.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = `${s.name} (${s.address || s.city || 'Якутск'})`;
+        sel.appendChild(opt);
+      });
+      renderStationsTab();
+    } catch (e) {
+      showToast('Ошибка загрузки станций', 'error');
+    }
+  }
+
+  // Tab switching
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tabMarksSection').style.display = 'none';
+    document.getElementById('tabCommentsSection').style.display = 'none';
+    document.getElementById('tabStationsSection').style.display = 'none';
+    const anSection = document.getElementById('tabAnalyticsSection');
+    if (anSection) anSection.style.display = 'none';
+
+    if (tab === 'marks') {
+      document.getElementById('tabMarksBtn').classList.add('active');
+      document.getElementById('tabMarksSection').style.display = 'block';
+      loadMarks(currentMarksOffset);
+    } else if (tab === 'comments') {
+      document.getElementById('tabCommentsBtn').classList.add('active');
+      document.getElementById('tabCommentsSection').style.display = 'block';
+      loadComments(0);
+    } else if (tab === 'stations') {
+      document.getElementById('tabStationsBtn').classList.add('active');
+      document.getElementById('tabStationsSection').style.display = 'block';
+      renderStationsTab();
+    } else if (tab === 'analytics') {
+      document.getElementById('tabAnalyticsBtn').classList.add('active');
+      if (anSection) anSection.style.display = 'block';
+      loadAnalytics();
+    }
+  }
+
+  // Marks Loader
+  async function loadMarks(offset = 0) {
+    currentMarksOffset = offset;
+    const search = document.getElementById('marksSearchInput').value.trim();
+    const fuel = document.getElementById('marksFuelFilter').value;
+    const status = document.getElementById('marksStatusFilter').value;
+    const source = document.getElementById('marksSourceFilter').value;
+
+    const params = new URLSearchParams({
+      limit: PAGE_SIZE,
+      offset: currentMarksOffset
+    });
+    if (search) params.append('search', search);
+    if (fuel) params.append('fuel_code', fuel);
+    if (status) params.append('status', status);
+    if (source) params.append('mark_type', source);
+
+    try {
+      const res = await fetch(`/api/admin/marks?${params.toString()}`, { headers: getHeaders() });
+      if (res.status === 401) return checkAuth();
+      const data = await res.json();
+      
+      document.getElementById('marksCountBadge').textContent = data.total;
+      renderMarksTable(data.items, data.total);
+    } catch (e) {
+      showToast('Ошибка загрузки меток', 'error');
+    }
+  }
+
+  function debounceLoadMarks() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => loadMarks(0), 300);
+  }
+
+  function renderMarksTable(items, total) {
+    currentMarksItems = items || [];
+    const tbody = document.getElementById('marksTableBody');
+    if (!items || items.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:#94a3b8;">Отметки не найдены</td></tr>';
+      document.getElementById('paginationInfo').textContent = '0 из 0';
+      document.getElementById('prevPageBtn').disabled = true;
+      document.getElementById('nextPageBtn').disabled = true;
+      return;
+    }
+
+    const rowsHtml = [];
+    for (let i = 0; i < items.length; i++) {
+      const m = items[i];
+      const prev = i > 0 ? items[i - 1] : null;
+
+      // Same batch condition: same station + non-empty matching comment + within 3 minutes
+      const isSameBatch = prev &&
+        m.station_id === prev.station_id &&
+        m.comment_text && prev.comment_text &&
+        m.comment_text.trim() === prev.comment_text.trim() &&
+        Math.abs((parseUtcDate(m.created_at) || 0) - (parseUtcDate(prev.created_at) || 0)) < 180000;
+
+      const next = i + 1 < items.length ? items[i + 1] : null;
+      const isNextSameBatch = next &&
+        m.station_id === next.station_id &&
+        m.comment_text && next.comment_text &&
+        m.comment_text.trim() === next.comment_text.trim() &&
+        Math.abs((parseUtcDate(m.created_at) || 0) - (parseUtcDate(next.created_at) || 0)) < 180000;
+
+      const timeStr = fmtYktDateTime(m.created_at);
+      const fuelBadge = `<span class="badge-fuel">${FUEL_NAMES[m.fuel_code] || m.fuel_code}</span>`;
+      const statusBadge = STATUS_LABELS[m.status] || m.status;
+      const limitStr = m.limit_liters ? `<b>${m.limit_liters} л</b>` : '—';
+      const queueStr = m.queue_count !== null && m.queue_count !== undefined ? `${m.queue_count} авто` : '—';
+      const sourceStr = `<span class="source-tag">${escapeHtml(m.username || m.mark_type)}</span>`;
+
+      let commentHtml = '<span style="color:#475569;font-size:12px;">—</span>';
+      let rowClass = '';
+
+      if (isSameBatch) {
+        rowClass = 'batch-group-item';
+        commentHtml = `<div class="batch-sub-comment">↳ Тот же комментарий (к посту #${prev.id})</div>`;
+      } else {
+        if (isNextSameBatch) {
+          rowClass = 'batch-group-start batch-group-item';
+        }
+        if (m.comment_text) {
+          const batchHeader = isNextSameBatch ? `<div class="batch-badge">📦 Пакетное обновление (несколько видов топлива)</div>` : '';
+          commentHtml = `${batchHeader}<div style="max-width:320px;font-size:12px;color:#e2e8f0;white-space:pre-wrap;word-break:break-word;line-height:1.35;">${escapeHtml(m.comment_text)}</div>`;
+        }
+        if (m.photo_path) {
+          commentHtml += `<div style="margin-top:4px;"><a href="/media/${escapeHtml(m.photo_path)}" target="_blank"><img src="/media/${escapeHtml(m.photo_path)}" style="width:36px;height:36px;object-fit:cover;border-radius:4px;border:1px solid #334155;"></a></div>`;
+        }
+      }
+
+      rowsHtml.push(`
+        <tr class="${rowClass}">
+          <td><span style="color:#94a3b8;font-size:11px;">#${m.id}</span><br><b>${timeStr}</b></td>
+          <td>
+            <div style="font-weight:700;color:#fff;">${escapeHtml(m.station_name || 'Неизвестная станция')}</div>
+            <div style="font-size:11.5px;color:#94a3b8;">${escapeHtml(m.station_address || m.station_city || '')}</div>
+          </td>
+          <td>${commentHtml}</td>
+          <td>${fuelBadge}</td>
+          <td>${statusBadge}</td>
+          <td>${limitStr}</td>
+          <td>${queueStr}</td>
+          <td>${sourceStr}</td>
+          <td style="text-align:right;white-space:nowrap;">
+            <button class="btn btn-secondary btn-sm" onclick="openEditMarkModalById(${m.id})">✏️ Изменить</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteMark(${m.id})">🗑️</button>
+          </td>
+        </tr>
+      `);
+    }
+
+    tbody.innerHTML = rowsHtml.join('');
+
+    const fromNum = currentMarksOffset + 1;
+    const toNum = Math.min(currentMarksOffset + items.length, total);
+    document.getElementById('paginationInfo').textContent = `${fromNum} - ${toNum} из ${total}`;
+    document.getElementById('prevPageBtn').disabled = currentMarksOffset === 0;
+    document.getElementById('nextPageBtn').disabled = toNum >= total;
+  }
+
+  function changePage(dir) {
+    const nextOffset = currentMarksOffset + (dir * PAGE_SIZE);
+    if (nextOffset >= 0) {
+      loadMarks(nextOffset);
+    }
+  }
+
+  // Modals
+  function openNewMarkModal() {
+    document.getElementById('markModalTitle').textContent = 'Добавить новую отметку вручную';
+    document.getElementById('editMarkId').value = '';
+    document.getElementById('modalCommentBox').style.display = 'none';
+    document.getElementById('modalStationSelect').value = '';
+    document.getElementById('modalFuelSelect').value = '92';
+    document.getElementById('modalStatusSelect').value = 'yes';
+    document.getElementById('modalLimitInput').value = '';
+    document.getElementById('modalQueueInput').value = '';
+    document.getElementById('markModal').classList.add('active');
+  }
+
+  function openEditMarkModalById(id) {
+    const m = currentMarksItems.find(x => x.id === id);
+    if (m) openEditMarkModal(m);
+  }
+
+  function openEditMarkModal(m) {
+    document.getElementById('markModalTitle').textContent = `Редактирование отметки #${m.id}`;
+    document.getElementById('editMarkId').value = m.id;
+
+    // Show comment context if present
+    const commentBox = document.getElementById('modalCommentBox');
+    if (m.comment_text || m.photo_path) {
+      commentBox.style.display = 'block';
+      document.getElementById('modalCommentAuthor').textContent = m.username ? `@${m.username}` : (m.mark_type || '');
+      document.getElementById('modalCommentText').textContent = m.comment_text || '(Текст отсутствует, прикреплено фото)';
+      
+      const photoDiv = document.getElementById('modalCommentPhoto');
+      if (m.photo_path) {
+        photoDiv.style.display = 'block';
+        photoDiv.innerHTML = `<a href="/media/${escapeHtml(m.photo_path)}" target="_blank"><img src="/media/${escapeHtml(m.photo_path)}" style="max-width:140px;max-height:100px;border-radius:6px;border:1px solid #334155;"></a>`;
+      } else {
+        photoDiv.style.display = 'none';
+        photoDiv.innerHTML = '';
+      }
+    } else {
+      commentBox.style.display = 'none';
+    }
+
+    document.getElementById('modalStationSelect').value = m.station_id;
+    document.getElementById('modalFuelSelect').value = m.fuel_code;
+    document.getElementById('modalStatusSelect').value = m.status;
+    document.getElementById('modalLimitInput').value = m.limit_liters || '';
+    document.getElementById('modalQueueInput').value = m.queue_count !== null && m.queue_count !== undefined ? m.queue_count : '';
+    document.getElementById('markModal').classList.add('active');
+  }
+
+  function closeMarkModal() {
+    document.getElementById('markModal').classList.remove('active');
+  }
+
+  async function saveMark(e) {
+    e.preventDefault();
+    const markId = document.getElementById('editMarkId').value;
+    const stationId = document.getElementById('modalStationSelect').value;
+    const fuelCode = document.getElementById('modalFuelSelect').value;
+    const status = document.getElementById('modalStatusSelect').value;
+    const limitLiters = document.getElementById('modalLimitInput').value;
+    const queueCount = document.getElementById('modalQueueInput').value;
+
+    const payload = {
+      station_id: parseInt(stationId),
+      fuel_code: fuelCode,
+      status: status,
+      limit_liters: limitLiters ? parseInt(limitLiters) : null,
+      queue_count: queueCount ? parseInt(queueCount) : null
+    };
+
+    try {
+      let res;
+      if (markId) {
+        res = await fetch(`/api/admin/marks/${markId}`, {
+          method: 'PUT',
+          headers: getHeaders(),
+          body: JSON.stringify(payload)
+        });
+      } else {
+        res = await fetch('/api/admin/marks', {
+          method: 'POST',
+          headers: getHeaders(),
+          body: JSON.stringify(payload)
+        });
+      }
+
+      const data = await res.json();
+      if (data.ok) {
+        showToast(markId ? 'Отметка успешно обновлена' : 'Отметка добавлена');
+        closeMarkModal();
+        loadMarks(currentMarksOffset);
+      } else {
+        showToast(data.error || 'Ошибка сохранения', 'error');
+      }
+    } catch (err) {
+      showToast('Сетевая ошибка', 'error');
+    }
+  }
+
+  async function deleteMark(id) {
+    if (!confirm(`Удалить отметку #${id}?`)) return;
+    try {
+      const res = await fetch(`/api/admin/marks/${id}`, {
+        method: 'DELETE',
+        headers: getHeaders()
+      });
+      const data = await res.json();
+      if (data.ok) {
+        showToast('Отметка удалена');
+        loadMarks(currentMarksOffset);
+      } else {
+        showToast('Ошибка удаления', 'error');
+      }
+    } catch (e) {
+      showToast('Ошибка удаления', 'error');
+    }
+  }
+
+  // Comments Tab
+  async function loadComments(offset = 0) {
+    const search = document.getElementById('commentsSearchInput').value.trim();
+    const params = new URLSearchParams({ limit: 50, offset: offset });
+    if (search) params.append('search', search);
+
+    try {
+      const res = await fetch(`/api/admin/comments?${params.toString()}`, { headers: getHeaders() });
+      const data = await res.json();
+      document.getElementById('commentsCountBadge').textContent = data.total;
+      renderCommentsTable(data.items);
+    } catch (e) {
+      showToast('Ошибка загрузки отзывов', 'error');
+    }
+  }
+
+  function debounceLoadComments() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => loadComments(0), 300);
+  }
+
+  function renderCommentsTable(items) {
+    const tbody = document.getElementById('commentsTableBody');
+    if (!items || items.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:#94a3b8;">Отзывы не найдены</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = items.map(c => {
+      const timeStr = fmtYktDateTime(c.created_at);
+      const photoHtml = c.photo_path 
+        ? `<a href="/media/${escapeHtml(c.photo_path)}" target="_blank"><img src="/media/${escapeHtml(c.photo_path)}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;border:1px solid #334155;"></a>` 
+        : '<span style="color:#64748b;">—</span>';
+
+      return `
+        <tr>
+          <td><span style="color:#94a3b8;font-size:11px;">#${c.id}</span><br><b>${timeStr}</b></td>
+          <td><b>${escapeHtml(c.station_name || 'АЗС')}</b><div style="font-size:11px;color:#94a3b8;">${escapeHtml(c.station_address || '')}</div></td>
+          <td style="max-width:350px;word-break:break-word;white-space:pre-wrap;">${escapeHtml(c.comment)}</td>
+          <td>${photoHtml}</td>
+          <td><span class="source-tag">${escapeHtml(c.username || 'Пользователь')}</span></td>
+          <td style="text-align:right;">
+            <button class="btn btn-danger btn-sm" onclick="deleteComment(${c.id})">🗑️ Удалить</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  async function deleteComment(id) {
+    if (!confirm(`Удалить комментарий #${id}?`)) return;
+    try {
+      const res = await fetch(`/api/admin/comments/${id}`, {
+        method: 'DELETE',
+        headers: getHeaders()
+      });
+      const data = await res.json();
+      if (data.ok) {
+        showToast('Комментарий удален');
+        loadComments(0);
+      }
+    } catch (e) {
+      showToast('Ошибка удаления', 'error');
+    }
+  }
+
+  // Stations Tab
+  function renderStationsTab() {
+    const filter = (document.getElementById('stationsSearchInput')?.value || '').toLowerCase();
+    const tbody = document.getElementById('stationsTableBody');
+    if (!tbody) return;
+
+    const filtered = allStations.filter(s => 
+      !filter || 
+      s.name.toLowerCase().includes(filter) || 
+      (s.address && s.address.toLowerCase().includes(filter)) ||
+      (s.brand && s.brand.toLowerCase().includes(filter))
+    );
+
+    tbody.innerHTML = filtered.map(s => {
+      const untilDt = parseUtcDate(s.unloading_until);
+      const isUnloading = untilDt && untilDt > new Date();
+      const statusHtml = s.is_closed 
+        ? '<span class="badge badge-no">🔒 Закрыта</span>' 
+        : '<span class="badge badge-yes">🟢 Работает</span>';
+      
+      const unloadingHtml = isUnloading 
+        ? `<span class="badge badge-limit">🚛 Слив до ${fmtYktTimeOnly(s.unloading_until)}</span>` 
+        : '<span style="color:#64748b;">Нет</span>';
+
+      return `
+        <tr>
+          <td><span style="color:#94a3b8;font-size:11px;">#${s.id}</span></td>
+          <td><b>${s.name}</b> <span class="badge badge-fuel">${s.brand}</span></td>
+          <td>${s.address || s.city || 'Якутск'}</td>
+          <td>${statusHtml}</td>
+          <td>${unloadingHtml}</td>
+          <td style="text-align:right;white-space:nowrap;">
+            ${isUnloading 
+              ? `<button class="btn btn-secondary btn-sm" onclick="toggleUnloading(${s.id}, true)">✅ Снять слив</button>`
+              : `<button class="btn btn-warning btn-sm" onclick="toggleUnloading(${s.id}, false)">🚛 Слив (35 мин)</button>`
+            }
+            ${s.is_closed
+              ? `<button class="btn btn-success btn-sm" onclick="toggleClosed(${s.id}, 0)">🔓 Открыть</button>`
+              : `<button class="btn btn-danger btn-sm" onclick="toggleClosed(${s.id}, 1)">🔒 Закрыть</button>`
+            }
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function filterStationsTable() {
+    renderStationsTab();
+  }
+
+  async function toggleUnloading(stationId, clear = false) {
+    try {
+      const res = await fetch('/api/admin/unloading', {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({ station_id: stationId, clear: clear, minutes: 35 })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        showToast(clear ? 'Слив снят' : 'Установлен статус слива (35 мин)');
+        await loadStations();
+      }
+    } catch (e) {
+      showToast('Ошибка обновления статуса слива', 'error');
+    }
+  }
+
+  async function toggleClosed(stationId, isClosed) {
+    try {
+      const res = await fetch('/api/admin/station-closed', {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({ station_id: stationId, is_closed: isClosed })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        showToast(isClosed ? 'АЗС помечена как закрытая' : 'АЗС открыта');
+        await loadStations();
+      }
+    } catch (e) {
+      showToast('Ошибка изменения статуса АЗС', 'error');
+    }
+  }
+
+  // Clear Map Cache
+  async function clearMapCache() {
+    try {
+      const res = await fetch('/api/admin/cache-clear', {
+        method: 'POST',
+        headers: getHeaders()
+      });
+      const data = await res.json();
+      if (data.ok) {
+        showToast('⚡ Кэш сброшен, клиенты карты обновлены по WebSocket');
+      }
+    } catch (e) {
+      showToast('Ошибка сброса кэша', 'error');
+    }
+  }
+
+  // Analytics Loader & Renderer
+  async function loadAnalytics() {
+    const periodSel = document.getElementById('analyticsPeriodSelect');
+    const hours = periodSel ? periodSel.value : '24';
+    try {
+      const res = await fetch(`/api/admin/analytics?hours=${hours}`, { headers: getHeaders() });
+      if (!res.ok) {
+        showToast('Ошибка загрузки аналитики', 'error');
+        return;
+      }
+      const data = await res.json();
+      renderAnalytics(data);
+    } catch (e) {
+      showToast('Ошибка сети при загрузке аналитики', 'error');
+    }
+  }
+
+  function renderAnalytics(data) {
+    if (!data) return;
+
+    // Stat Cards
+    document.getElementById('statUniqueGuests').textContent = data.unique_guests || 0;
+    document.getElementById('statUniqueDesc').textContent = `${data.unique_tg_users || 0} авторизовано в Telegram`;
+    document.getElementById('statUniqueSessions').textContent = data.unique_sessions || 0;
+    document.getElementById('statTotalEvents').textContent = data.total_events || 0;
+
+    const routeCount = (data.events_by_name && data.events_by_name['route_build']) || 0;
+    document.getElementById('statTotalRoutes').textContent = routeCount;
+
+    // Top Clicked Stations
+    const topStEl = document.getElementById('analyticsTopStations');
+    if (topStEl) {
+      if (!data.top_stations || data.top_stations.length === 0) {
+        topStEl.innerHTML = '<div style="text-align:center;color:#64748b;padding:20px;">Нет данных о кликах за выбранный период</div>';
+      } else {
+        const maxClicks = Math.max(...data.top_stations.map(s => s.clicks), 1);
+        topStEl.innerHTML = data.top_stations.map((s, idx) => {
+          const pct = Math.round((s.clicks / maxClicks) * 100);
+          return `
+            <div class="rank-item">
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:13px;font-weight:700;color:#f1f5f9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                  ${idx + 1}. ${s.name} ${s.brand ? `<span style="color:#38bdf8;font-size:11.5px;">(${s.brand})</span>` : ''}
+                </div>
+                <div style="font-size:11px;color:#64748b;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                  📍 ${s.address || 'Якутск'}
+                </div>
+                <div class="rank-bar-bg">
+                  <div class="rank-bar-fill" style="width:${pct}%;"></div>
+                </div>
+              </div>
+              <div style="font-size:15px;font-weight:800;color:#38bdf8;padding-left:12px;">
+                ${s.clicks}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    // Top Routes Built
+    const topRtEl = document.getElementById('analyticsTopRoutes');
+    if (topRtEl) {
+      if (!data.top_routes || data.top_routes.length === 0) {
+        topRtEl.innerHTML = '<div style="text-align:center;color:#64748b;padding:20px;">Нет данных о поездках за выбранный период</div>';
+      } else {
+        const maxRoutes = Math.max(...data.top_routes.map(s => s.routes), 1);
+        topRtEl.innerHTML = data.top_routes.map((s, idx) => {
+          const pct = Math.round((s.routes / maxRoutes) * 100);
+          return `
+            <div class="rank-item">
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:13px;font-weight:700;color:#f1f5f9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                  ${idx + 1}. ${s.name} ${s.brand ? `<span style="color:#34d399;font-size:11.5px;">(${s.brand})</span>` : ''}
+                </div>
+                <div class="rank-bar-bg">
+                  <div class="rank-bar-fill" style="width:${pct}%;background:#34d399;"></div>
+                </div>
+              </div>
+              <div style="font-size:15px;font-weight:800;color:#34d399;padding-left:12px;">
+                🚗 ${s.routes}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    // Fuel Filters
+    const fuelEl = document.getElementById('analyticsFuelFilters');
+    if (fuelEl) {
+      if (!data.fuel_filters || data.fuel_filters.length === 0) {
+        fuelEl.innerHTML = '<div style="text-align:center;color:#64748b;padding:20px;">Нет фильтраций по марке топлива за период</div>';
+      } else {
+        const maxFuel = Math.max(...data.fuel_filters.map(f => f.cnt), 1);
+        const fuelNames = { '92': 'АИ-92', '95': 'АИ-95', '98': 'АИ-98', '100': 'АИ-100', 'dt': 'ДТ', 'gas': 'Газ' };
+        fuelEl.innerHTML = data.fuel_filters.map(f => {
+          const name = fuelNames[f.fuel_code] || f.fuel_code;
+          const pct = Math.round((f.cnt / maxFuel) * 100);
+          return `
+            <div class="rank-item">
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:13px;font-weight:700;color:#fbbf24;">
+                  ⛽ ${name}
+                </div>
+                <div class="rank-bar-bg">
+                  <div class="rank-bar-fill" style="width:${pct}%;background:#fbbf24;"></div>
+                </div>
+              </div>
+              <div style="font-size:15px;font-weight:800;color:#fbbf24;padding-left:12px;">
+                ${f.cnt}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    // Events Breakdown
+    const evEl = document.getElementById('analyticsEventsBreakdown');
+    if (evEl) {
+      const evNames = data.events_by_name || {};
+      const entries = Object.entries(evNames).sort((a, b) => b[1] - a[1]);
+      if (entries.length === 0) {
+        evEl.innerHTML = '<div style="text-align:center;color:#64748b;padding:20px;">Нет событий</div>';
+      } else {
+        const eventLabels = {
+          'session_start': '📱 Запуск карты (сессия)',
+          'station_click': '⛽ Клик по маркеру АЗС',
+          'station_panel_open': '📋 Открытие карточки АЗС',
+          'route_build': '🚗 Построение маршрута (2ГИС)',
+          'filter_fuel': '🔍 Поиск по марке топлива',
+          'filter_brand': '🏢 Фильтр по бренду/сети',
+          'filter_payment': '💳 Фильтр по способу оплаты',
+          'filter_city': '🏙️ Выбор города/поселка',
+          'filter_toggle': '🔘 Переключение фильтра',
+          'filter_traffic_toggle': '🚦 Переключение пробок',
+          'urgent_open': '⚡ Открытие «Срочно заправиться»',
+          'urgent_tab_switch': '⏱ Переключение режима «Срочно»',
+          'urgent_station_click': '🎯 Выбор АЗС из списка «Срочно»',
+          'unified_open': '📋 Открытие панели активности',
+          'unified_tab_switch': '📸 Переключение вкладки фото/ленты',
+          'unified_category_filter': '🥫 Фильтр категории активности',
+          'activity_toast_click': '🔔 Клик по уведомлению',
+          'geo_locate': '📍 Определение геопозиции',
+          'mark_modal_open': '📝 Открытие формы отметки',
+          'mark_submit': '✅ Отправка отметки водителем',
+          'feedback_open': '💬 Открытие обратной связи',
+          'feedback_submit': '📩 Отправка обратной связи',
+          'ads_open': '📢 Открытие окна рекламы/B2B',
+          'ads_submit': '🤝 Отправка заявки на рекламу',
+          'promo_click': '🎯 Клик по промо/рекламной плашке',
+          'promo_dismiss': '❌ Закрытие промо-баннера'
+        };
+        evEl.innerHTML = entries.map(([ev, cnt]) => {
+          const lbl = eventLabels[ev] || ev;
+          return `
+            <div class="rank-item" style="padding:8px 12px;">
+              <div style="font-size:12.5px;color:#cbd5e1;font-weight:600;">
+                ${lbl}
+              </div>
+              <div style="font-size:13px;font-weight:800;color:#94a3b8;">
+                ${cnt}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    // Promo & Ads clicks breakdown
+    const promoEl = document.getElementById('analyticsPromoClicks');
+    if (promoEl) {
+      if (!data.promo_clicks || data.promo_clicks.length === 0) {
+        promoEl.innerHTML = '<div style="text-align:center;color:#64748b;padding:20px;">Нет переходов по рекламным/промо-плашкам за выбранный период</div>';
+      } else {
+        const maxPromo = Math.max(...data.promo_clicks.map(p => p.cnt), 1);
+        const placementNames = {
+          'bottom_banner': 'Плавающий баннер внизу карты',
+          'station_panel': 'Карточка АЗС (боковая шторка)',
+          'filter_bar': 'Верхняя панель фильтров'
+        };
+        const targetNames = {
+          'tiinservice_web': '🌐 Сайт tiin Connect',
+          'tiinservice_tg_bot': '🤖 TG-бот tiin Connect',
+          'finance_web': '💰 Веб-приложение Finance',
+          'ads_b2b': '📢 Заявка на рекламу'
+        };
+        promoEl.innerHTML = data.promo_clicks.map(p => {
+          const title = p.title || 'Баннер';
+          const place = placementNames[p.placement] || p.placement;
+          const target = targetNames[p.target] || p.target;
+          const pct = Math.round((p.cnt / maxPromo) * 100);
+          return `
+            <div class="rank-item">
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:13px;font-weight:700;color:#f1f5f9;">
+                  🎯 ${title} <span style="font-size:11.5px;color:#38bdf8;font-weight:normal;">➔ ${target}</span>
+                </div>
+                <div style="font-size:11px;color:#64748b;margin-top:2px;">
+                  📍 Размещение: ${place}
+                </div>
+                <div class="rank-bar-bg">
+                  <div class="rank-bar-fill" style="width:${pct}%;background:#38bdf8;"></div>
+                </div>
+              </div>
+              <div style="font-size:15px;font-weight:800;color:#38bdf8;padding-left:12px;">
+                ${p.cnt}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+  }
+
+  // Start
+  checkAuth();
+</script>
+</body>
+</html>
